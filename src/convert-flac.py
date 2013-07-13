@@ -44,18 +44,27 @@ def convert_song(fname, infolder, outfolder, stats):
     outfile = "%s.mp3" % re.match("^(.*)\.flac$", fname).groups()[0]
     stats.update({'infile':os.path.join(infolder, fname),
                   'outfile':os.path.join(outfolder, outfile)})
-
+    clean_common_title_goofs(stats)
     ## convert the song
     cmd = " ".join(CMD) % stats
     ## print cmd   ## for debugging
     os.system(cmd)
+
+def clean_common_title_goofs(stats):
+    """
+    A bit more cleanup. This function mutates its input!
+    """
+    m = re.match("(?P<artist>%s)[\s-]+(?P<title>.*)$" % stats['artist'], stats['title'])
+    if m != None:
+        ## title is of form <artist> - <title>, remove artist
+        stats['title'] = m.groupdict()['title']
 
 def analyze_filename(fname):
     """
     Extract title/track number from filename
     returns {'title', 'track'}
     """
-    m = re.match("^(?P<track>[0-9]+)[\s\-]+(?P<title>.+)\.flac$", fname)
+    m = re.match("^(?P<track>[0-9]+)[\s-]+(?P<title>.+)\.flac$", fname)
     if m != None:
         return m.groupdict()   ## return {'title', 'track'}
     m = re.match("^(?P<title>.*)\.flac$", fname)
