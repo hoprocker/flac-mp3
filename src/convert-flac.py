@@ -18,6 +18,7 @@ FFMPEG = "/usr/local/bin/ffmpeg"
 CMD = ["%(ffmpeg)s",
        "-i \"%(infile)s\"",
        "-b:a %(bitrate)sk",
+       "-id3v2_version 3",
        "-metadata title=\"%(title)s\"",
        "-metadata album=\"%(album)s\"",
        "-metadata artist=\"%(artist)s\"",
